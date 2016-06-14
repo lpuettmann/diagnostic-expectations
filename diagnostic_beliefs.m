@@ -46,8 +46,6 @@ dneg(dexp < 0) = dexp(dexp < 0);
 
 %% Make a plot (Figure 2 in paper)
 f = figure;
-
-subplot(3, 1, 1)
 plot(rat_exp, 'Linewidth', 2, 'Color', [0.9059, 0.1608, 0.5412])
 hold on
 plot(diagn_exp, 'Linewidth', 2, 'Color', [0.4588, 0.4392, 0.7020])
@@ -60,21 +58,43 @@ set(gca, 'YTick', []);
 title('Rational vs. diagnostic expectations')
 box off
 
-subplot(3, 1, 2)
+% Reposition the figure
+set(gcf, 'Position', [100 200 600 300]) % in vector: left bottom width height
+set(f, 'Units', 'Inches');
+pos = get(f, 'Position');
+set(f, 'PaperPositionMode', 'Auto', 'PaperUnits', ...
+    'Inches', 'PaperSize', [pos(3), pos(4)])
+
+print(f, 'diagn_beliefs_fig2_1.pdf', '-dpdf', '-r0') % save as pdf
+saveas(f, 'diagn_beliefs_fig2_1.jpg') % save figure as jpg
+
+
+f = figure;
 a = area([dpos, zeros(T-1, 1)]);
 h = get(a, 'children');
-set(h{1}, 'FaceColor', [0.8510, 0.3725, 0.0078]);
+set(h{1}, 'FaceColor', [0.1059, 0.6196, 0.4667]);
 xlabel('Time')
 hold on
-a = area([dneg, zeros(T-1, 1)], 'FaceColor', 'green', 'FaceColor', 'green');
+a = area([dneg, zeros(T-1, 1)]);
 h = get(a, 'children');
-set(h{1}, 'FaceColor', [0.1059, 0.6196, 0.4667]);
+set(h{1}, 'FaceColor', [0.8510, 0.3725, 0.0078]);
 set(gca, 'XTick', []);
 set(gca, 'YTick', []);
 title('Difference')
 box off
 
-subplot(3, 1, 3)
+% Reposition the figure
+set(gcf, 'Position', [100 200 600 300]) % in vector: left bottom width height
+set(f, 'Units', 'Inches');
+pos = get(f, 'Position');
+set(f, 'PaperPositionMode', 'Auto', 'PaperUnits', ...
+    'Inches', 'PaperSize', [pos(3), pos(4)])
+
+print(f, 'diagn_beliefs_fig2_2.pdf', '-dpdf', '-r0') % save as pdf
+saveas(f, 'diagn_beliefs_fig2_2.jpg') % save figure as jpg
+
+
+f = figure;
 scatter(omega(1:end-1), forecast_error, 'MarkerEdgeColor', [0.2, 0.2, 0.2])
 lsline % trend line
 title('In bad times: positive forecast errors')
@@ -86,23 +106,15 @@ box off
 
 set(gca,'FontSize', 14) % change default font size of axis labels
 
-
-%% Reposition the figure
-% -----------------------------------------------------------------------
-set(gcf, 'Position', [100 200 1000 530]) % in vector: left bottom width height
-
+% Reposition the figure
+set(gcf, 'Position', [100 200 600 300]) % in vector: left bottom width height
 set(f, 'Units', 'Inches');
 pos = get(f, 'Position');
-
 set(f, 'PaperPositionMode', 'Auto', 'PaperUnits', ...
     'Inches', 'PaperSize', [pos(3), pos(4)])
 
-
-%% Export to pdf
-% -----------------------------------------------------------------------
-print(f, 'diagn_beliefs_fig2.pdf', '-dpdf', '-r0')
+print(f, 'diagn_beliefs_fig2_3.pdf', '-dpdf', '-r0') % save as pdf
+saveas(f, 'diagn_beliefs_fig2_3.jpg') % save figure as jpg
 
 
-%% Save figure as JPG
-% -----------------------------------------------------------------------
-saveas(f, 'diagn_beliefs_fig2.jpg')
+
