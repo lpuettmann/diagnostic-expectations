@@ -8,28 +8,36 @@ clc
 
 
 %% Set parameters
-T = 150;
-b = 0.7;
-sigma = 1;
-theta = 1;
+T = 150; % number of periods to simulate
+b = 0.7; % autoregressive paramater
+sigma = 1; % variance of shock
+theta = 1; % "thinking" parameters
 
 
 %% Get draws of omega
+% See p.17 for the AR(1)-process: omega_t = 0.7 * omega_{t-1} + epsilon_t
+
 omega = nan(T, 1);
 omega(1) = 0; % omega_0
 
-epsilon = 2*randn(T, 1);
+epsilon = sigma*randn(T, 1); % draw a shock series
 
 for t=2:T
     omega(t) = b*(omega(t-1)) + epsilon(t);
 end
 
-%% Calculate expectations of omega
-rat_exp = b * omega(1:end-1);
-assert( length(rat_exp) + 1 == length(omega) ) % check dimensions
 
+%% Calculate expectations of omega
+
+% Rational expectations
+rat_exp = b * omega(1:end-1);
+
+% Diagnostic expectations. (See equation (4) in the paper on p. 14)
 diagn_exp = b * omega(1:end-1) * (1 + theta * (1 - b));
-assert( length(diagn_exp) + 1 == length(omega) ) % check dimensions
+
+% Check dimensions
+assert( length(rat_exp) + 1 == length(omega) ) 
+assert( length(diagn_exp) + 1 == length(omega) )
 
 
 %% Need these for the plot
@@ -44,7 +52,9 @@ dneg = zeros(T-1, 1);
 dneg(dexp < 0) = dexp(dexp < 0);
 
 
-%% Make a plot (Figure 2 in paper)
+%% Reproduce Figure 2 from the paper
+
+% First figure (first panel in Figure 2)
 f = figure;
 plot(rat_exp, 'Linewidth', 2, 'Color', [0.9059, 0.1608, 0.5412])
 hold on
@@ -68,7 +78,7 @@ set(f, 'PaperPositionMode', 'Auto', 'PaperUnits', ...
 print(f, 'diagn_beliefs_fig2_1.pdf', '-dpdf', '-r0') % save as pdf
 saveas(f, 'diagn_beliefs_fig2_1.jpg') % save figure as jpg
 
-
+% Second figure (not in paper)
 f = figure;
 a = area([dpos, zeros(T-1, 1)]);
 h = get(a, 'children');
@@ -93,7 +103,7 @@ set(f, 'PaperPositionMode', 'Auto', 'PaperUnits', ...
 print(f, 'diagn_beliefs_fig2_2.pdf', '-dpdf', '-r0') % save as pdf
 saveas(f, 'diagn_beliefs_fig2_2.jpg') % save figure as jpg
 
-
+% Third figure (second panel in Figure 2)
 f = figure;
 scatter(omega(1:end-1), forecast_error, 'MarkerEdgeColor', [0.2, 0.2, 0.2])
 lsline % trend line
@@ -115,6 +125,3 @@ set(f, 'PaperPositionMode', 'Auto', 'PaperUnits', ...
 
 print(f, 'diagn_beliefs_fig2_3.pdf', '-dpdf', '-r0') % save as pdf
 saveas(f, 'diagn_beliefs_fig2_3.jpg') % save figure as jpg
-
-
-
