@@ -20,6 +20,8 @@ theta = 1; % "thinking" parameters
 omega = nan(T, 1);
 omega(1) = 0; % omega_0
 
+rng(123) % set random seed
+
 epsilon = sigma*randn(T, 1); % draw a shock series
 
 for t=2:T
